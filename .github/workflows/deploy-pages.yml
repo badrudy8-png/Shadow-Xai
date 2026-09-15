@@ -22,11 +22,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Prepare static site
+        shell: bash
         run: |
+          set -euo pipefail
+          test -f web/index.html
+          test -f web/style.css
+          test -f web/app.js
           mkdir -p _site
           cp web/index.html _site/index.html
           cp web/style.css _site/style.css
