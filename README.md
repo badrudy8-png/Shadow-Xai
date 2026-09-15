@@ -15,6 +15,8 @@
 - **Evaluation:** evaluation case sederhana dan regression test suite.
 - **API:** HTTP JSON lokal dengan `/health` dan `POST /chat`.
 - **Infrastructure:** GitHub Actions CI, Python compile checks, pytest, Dockerfile, dan `.env.example`.
+- **Project management:** issue templates, pull request template, roadmap, ADR, changelog, milestone plan, MIT license, dan dependency policy.
+- **Advanced AI foundations:** summarizer, fact-check hook, intelligent routing, parallel tool executor, background job registry, knowledge graph, serta multimodal/file fingerprint gateway.
 
 Lihat [status fitur lengkap](docs/feature-status.md) untuk membedakan implementasi aktif dan pekerjaan lanjutan.
 
@@ -91,6 +93,10 @@ Tool eksternal, eksekusi kode, web search, dan tindakan yang mengubah sistem **t
 
 Baca [SECURITY.md](SECURITY.md), [arsitektur](docs/architecture.md), dan [status fitur](docs/feature-status.md).
 
+## Project management
+
+Permintaan bug dan fitur menggunakan template di `.github/ISSUE_TEMPLATE/`. Pull request mengikuti `.github/pull_request_template.md`. Arah pengembangan ada di [ROADMAP.md](ROADMAP.md), keputusan arsitektur di [docs/adr](docs/adr/), dan perubahan versi di [CHANGELOG.md](CHANGELOG.md). Kebijakan dependency tersedia di [docs/dependencies.md](docs/dependencies.md).
+
 ## Roadmap berikutnya
 
 - Streaming native dan fallback provider.
@@ -100,6 +106,8 @@ Baca [SECURITY.md](SECURITY.md), [arsitektur](docs/architecture.md), dan [status
 - Lint, type checking, coverage, monitoring, dan release automation.
 - Dataset pipeline, LoRA/PEFT, checkpoint management, dan model evaluation.
 
+Advanced AI yang aktif saat ini bersifat lokal dan deterministic. Riset otonom, automatic tool/model selection berbasis model, multimodal decoding, voice output, dan background jobs durable membutuhkan provider atau queue produksi yang belum diaktifkan.
+
 ## Lisensi
 
-Lisensi proyek belum ditentukan oleh pemilik repositori. Jangan mengasumsikan kode ini bebas didistribusikan sampai file lisensi resmi ditambahkan.
+Proyek ini menggunakan [MIT License](LICENSE).
