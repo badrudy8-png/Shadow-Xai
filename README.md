@@ -1,12 +1,12 @@
 # Shadow-Xai
 
-**Shadow-Xai** adalah fondasi chatbot AI open source modular untuk percakapan, memory, tools, knowledge retrieval, dan agent orchestration yang aman.
+**Shadow-Xai** adalah fondasi chatbot AI open source modular untuk percakapan natural, reasoning, memory, tools, knowledge retrieval, dan agent orchestration yang aman.
 
 > **Status:** fondasi aktif versi `0.2.0`. Engine lokal dapat dijalankan tanpa API key. Adapter model eksternal bersifat opt-in.
 
 ## Fitur yang sudah berjalan
 
-- **LLM:** echo lokal, OpenAI-compatible adapter, local-command adapter, konfigurasi model/provider.
+- **LLM:** adapter echo lokal, OpenAI-compatible gateway, local-command adapter, model selection, quality profile, reasoning per keluarga model, retry, fallback, metadata penggunaan, dan system prompt profesional.
 - **Memory:** SQLite persistence, recent retrieval, search, export, dan penghapusan data pengguna.
 - **Tools:** registry, calculator berbasis AST, allowlist, timeout, dan audit log.
 - **Knowledge/RAG:** document ingestion teks, chunking, lexical retrieval, dan source tracking.
@@ -59,11 +59,17 @@ Default tidak membutuhkan jaringan. Untuk endpoint OpenAI-compatible, salin `.en
 
 ```bash
 export SHADOW_MODEL_PROVIDER=openai-compatible
-export SHADOW_MODEL_NAME=nama-model
 export SHADOW_MODEL_BASE_URL=https://provider.example/v1
 export SHADOW_MODEL_API_KEY='isi-di-environment-saja'
-shadow-xai chat "Tes model"
+export SHADOW_MODEL_NAME=gpt-5
+export SHADOW_QUALITY_PROFILE=balanced
+export SHADOW_REASONING_EFFORT=medium
+export SHADOW_MAX_OUTPUT_TOKENS=1800
+export SHADOW_MODEL_RETRIES=2
+shadow-xai chat "Jelaskan trade-off arsitektur ini secara profesional dan berikan rekomendasi."
 ```
+
+Untuk respons yang lebih natural, gunakan model yang lebih kuat pada gateway Anda, `SHADOW_QUALITY_PROFILE=quality` atau `reasoning`, system prompt bawaan yang menjaga konteks dan ketidakpastian, serta riwayat yang cukup melalui `SHADOW_MAX_HISTORY_MESSAGES`. Shadow-Xai tidak mengklaim kesetaraan persis dengan GPT-4.5; kualitas ditentukan oleh model provider, konteks, prompt, dan evaluasi aplikasi. Lihat [panduan integrasi LLM](docs/llm.md) untuk parameter token, reasoning GPT/Claude/Gemini, retry, fallback, dan praktik keamanan.
 
 ## Pengembangan
 
@@ -77,7 +83,7 @@ Struktur utama:
 ```text
 src/shadow_xai/
 ├── engine.py       # orkestrasi percakapan
-├── llm.py          # adapter model
+├── llm.py          # transport, model routing, reasoning, retry, fallback
 ├── memory.py       # SQLite memory
 ├── tools.py        # tool registry dan calculator
 ├── rag.py          # knowledge retrieval

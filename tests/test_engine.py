@@ -10,7 +10,8 @@ def test_engine_returns_response_and_history() -> None:
     response = engine.respond("Halo")
     assert isinstance(response, ChatResponse)
     assert "Halo" in response.text
-    assert response.provider == "placeholder"
+    assert response.provider == "echo"
+    assert response.model == "echo"
     assert [item.role for item in engine.history] == ["user", "assistant"]
 
 
@@ -25,7 +26,7 @@ def test_interactive_mode_supports_help_and_exit() -> None:
     engine.run_interactive(StringIO("/help\nHalo\n/exit\n"), output)
     text = output.getvalue()
     assert "Perintah: /help" in text
-    assert "Pesan diterima: Halo" in text
+    assert "Halo" in text
     assert "Sampai jumpa." in text
 
 
