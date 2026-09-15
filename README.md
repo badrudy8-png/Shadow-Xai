@@ -2,7 +2,7 @@
 
 **Shadow-Xai** adalah fondasi chatbot AI open source modular untuk percakapan natural, reasoning, memory, tools, knowledge retrieval, dan agent orchestration yang aman.
 
-> **Status:** fondasi aktif versi `0.2.0`. Engine lokal dapat dijalankan tanpa API key. Adapter model eksternal bersifat opt-in.
+> **Status:** fondasi aktif versi `0.3.0`. Engine lokal dapat dijalankan tanpa API key. Adapter model eksternal bersifat opt-in.
 
 ## Fitur yang sudah berjalan
 
@@ -13,7 +13,7 @@
 - **Agent:** planning dasar, bounded multi-step loop, retry, state hasil, dan completion flag.
 - **Security:** batas input/output, validasi, redaction secret, dan permission tools.
 - **Evaluation:** evaluation case sederhana dan regression test suite.
-- **API:** HTTP JSON lokal dengan `/health` dan `POST /chat`.
+- **API:** HTTP JSON lokal dengan `GET /health`, `GET /config`, serta `POST /chat` dan `POST /api/chat`. Server juga dapat menyajikan web UI pada `/`.
 - **Infrastructure:** GitHub Actions CI, Python compile checks, pytest, Dockerfile, dan `.env.example`.
 - **Project management:** issue templates, pull request template, roadmap, ADR, changelog, milestone plan, MIT license, dan dependency policy.
 - **Advanced AI foundations:** summarizer, fact-check hook, intelligent routing, parallel tool executor, background job registry, knowledge graph, serta multimodal/file fingerprint gateway.
@@ -37,15 +37,23 @@ Mode interaktif:
 shadow-xai chat
 ```
 
-API lokal:
+API lokal dan web UI:
 
 ```bash
 shadow-xai serve
+```
+
+Buka `http://127.0.0.1:8080/` untuk web UI, atau uji API:
+
+```bash
 curl http://127.0.0.1:8080/health
-curl -X POST http://127.0.0.1:8080/chat \\
+curl http://127.0.0.1:8080/config
+curl -X POST http://127.0.0.1:8080/api/chat \\
   -H 'Content-Type: application/json' \\
   -d '{"message":"Halo"}'
 ```
+
+Endpoint `/chat` tetap tersedia sebagai alias API.
 
 Konfigurasi publik:
 
@@ -90,7 +98,7 @@ src/shadow_xai/
 ├── agent.py        # agent loop
 ├── security.py     # policy dan validasi
 ├── evaluation.py   # evaluasi deterministik
-└── api.py          # HTTP API
+└── api.py          # HTTP API dan static web UI
 ```
 
 ## Keamanan
