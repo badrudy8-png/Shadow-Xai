@@ -1,9 +1,11 @@
-"""Core conversation engine with provider, memory, security, and RAG hooks."""
+"""Core conversation engine with provider, memory, routing, agent, security, and RAG hooks."""
 
 from dataclasses import dataclass
 import logging
 from typing import TextIO
 
+from .advanced import ConversationSummarizer, IntelligentRouter
+from .agent import Agent
 from .config import Settings
 from .llm import LLMAdapter, LLMError, LLMMessage, LLMResponse, build_adapter
 from .memory import MemoryStore
@@ -25,6 +27,8 @@ class ChatResponse:
     model: str = "unknown"
     used_fallback: bool = False
     usage: dict[str, object] | None = None
+    route: str = "default"
+    agent_completed: bool = False
 
 
 class ChatEngine:
@@ -55,6 +59,13 @@ class ChatEngine:
             )
         self.security = SecurityPolicy()
         self.knowledge = KnowledgeBase()
+        self.summarizer = ConversationSummarizer()
+        self.agent = Agent(max_steps=self.settings.max_agent_steps)
+        self.router = IntelligentRouter({
+            "default": lambda _prompt: "default",
+            "calculator": lambda _prompt: "calculator",
+            "research": lambda _prompt: "research",
+        })
         self._history: list[ChatMessage] = []
         self.logger = logging.getLogger("shadow_xai.engine")
 
@@ -69,6 +80,9 @@ class ChatEngine:
 
     def add_knowledge(self, text: str, source: str = "inline") -> int:
         return self.knowledge.ingest(text, source)
+
+    def _route(self, cleaned: str) -> str:
+        return self.router.select(cleaned)
 
     def _messages_for(self, cleaned: str) -> list[LLMMessage]:
         messages = [LLMMessage("system", self.settings.system_prompt)]
@@ -96,13 +110,40 @@ class ChatEngine:
 
     def respond(self, message: str) -> ChatResponse:
         cleaned = self.security.validate_input(message)
+        route = self._route(cleaned)
         self._history.append(ChatMessage("user", cleaned))
         if self.memory:
             self.memory.add(self.user_id, "user", cleaned)
+
+        agent_completed = False
+        if route != "default":
+            plan_result = self.agent.run(cleaned)
+            agent_completed = plan_result.completed
+
         response, used_fallback, provider = self._complete(self._messages_for(cleaned))
         text = self.security.validate_output(response.text)
-        event(self.logger, "chat.response", provider=provider, model=response.model, fallback=used_fallback, input_chars=len(cleaned), output_chars=len(text))
-        result = ChatResponse(text=text, provider=provider, model=response.model, used_fallback=used_fallback, usage=dict(response.usage))
+        summary = self.summarizer.summarize([item.text for item in self._history], max_chars=300)
+        event(
+            self.logger,
+            "chat.response",
+            provider=provider,
+            model=response.model,
+            fallback=used_fallback,
+            route=route,
+            agent_completed=agent_completed,
+            input_chars=len(cleaned),
+            output_chars=len(text),
+            history_summary_chars=len(summary),
+        )
+        result = ChatResponse(
+            text=text,
+            provider=provider,
+            model=response.model,
+            used_fallback=used_fallback,
+            usage=dict(response.usage),
+            route=route,
+            agent_completed=agent_completed,
+        )
         self._history.append(ChatMessage("assistant", text))
         if self.memory:
             self.memory.add(self.user_id, "assistant", text)
