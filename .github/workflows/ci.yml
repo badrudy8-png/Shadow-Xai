@@ -20,4 +20,14 @@ jobs:
       - run: python -m pytest -q
       - run: python -m compileall -q src
       - name: Check for private files
-        run: test ! -e .env && ! find . -name '*.pem' -o -name '*.key'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -e .env ]]; then
+            echo "::error::Private .env file is committed."
+            exit 1
+          fi
+          if find . -type f \( -name '*.pem' -o -name '*.key' \) -print -quit | grep -q .; then
+            echo "::error::Private key/certificate file is committed."
+            exit 1
+          fi
