@@ -2,29 +2,25 @@
 
 ## Lapisan utama
 
-Shadow-Xai dipisahkan menjadi beberapa lapisan agar model, memori, alat, dan antarmuka dapat berubah tanpa mengubah kontrak inti.
+| Lapisan | Modul | Tanggung jawab |
+|---|---|---|
+| Interface | `cli.py`, `api.py` | CLI interaktif dan JSON HTTP lokal. |
+| Orchestrator | `engine.py`, `agent.py` | Konteks, planning terbatas, retry, dan verifikasi hasil. |
+| Model adapter | `llm.py` | Echo lokal, command model, dan endpoint OpenAI-compatible. |
+| Memory | `memory.py` | SQLite persistence, retrieval, export, dan deletion. |
+| Knowledge | `rag.py` | Ingestion, chunking, lexical retrieval, dan source tracking. |
+| Tools | `tools.py` | Registry allowlist, timeout, kalkulator aman, dan audit. |
+| Safety | `security.py` | Batas input/output, validasi, dan redaction secret. |
+| Quality | `evaluation.py`, `tests/` | Case-based evaluation dan regression checks. |
 
-| Lapisan | Tanggung jawab |
-|---|---|
-| Interface | CLI, API, atau UI yang menerima permintaan pengguna. |
-| Orchestrator | Mengelola konteks, pemilihan provider, batas waktu, dan alur respons. |
-| Model adapter | Menyamakan antarmuka berbagai provider model. |
-| Memory | Menyimpan konteks dengan retensi dan penghapusan yang dapat dikontrol. |
-| Tool registry | Menyediakan alat yang di-allowlist dengan validasi dan audit. |
-| Evaluation | Mengukur kualitas, keamanan, regresi, dan kepatuhan kebijakan. |
+## Jalur percakapan
 
-## Kontrak saat ini
+1. Input divalidasi oleh `SecurityPolicy`.
+2. Pesan disimpan di history lokal dan, jika diaktifkan, `MemoryStore`.
+3. Konteks RAG yang relevan dapat disisipkan dengan source marker.
+4. `LLMAdapter` menghasilkan respons; default-nya tidak menggunakan jaringan.
+5. Output divalidasi dan dicatat kembali ke history/memory.
 
-`ChatEngine.respond(message)` adalah batas minimal yang menerima string non-kosong dan mengembalikan `ChatResponse`. Implementasi placeholder sengaja deterministik sehingga proyek dapat diuji sebelum provider model dipilih.
+## Batas keamanan
 
-## Prinsip desain
-
-- **Provider-agnostic:** kode inti tidak bergantung pada satu vendor model.
-- **Least privilege:** alat hanya mendapat izin yang diperlukan.
-- **Human control:** tindakan eksternal berisiko membutuhkan persetujuan pengguna.
-- **Observable:** kegagalan, pemanggilan alat, dan keputusan penting dapat diaudit.
-- **Testable:** komponen deterministik diuji tanpa jaringan atau kredensial nyata.
-
-## Batas implementasi awal
-
-Versi awal tidak mengirim data ke layanan eksternal, tidak menyimpan riwayat pengguna, tidak mengeksekusi kode, dan tidak melakukan tindakan agen. Semua fitur tersebut memerlukan desain ancaman, konfigurasi eksplisit, serta pengujian tambahan sebelum diaktifkan.
+Tidak ada tool eksternal yang aktif secara default. Calculator menggunakan AST allowlist, bukan `eval`. API hanya bind ke localhost jika dijalankan tanpa flag host. API key hanya dibaca dari environment dan tidak pernah ditampilkan oleh `config` command.

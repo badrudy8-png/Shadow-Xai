@@ -1,3 +1,13 @@
+Metadata-Version: 2.4
+Name: shadow-xai
+Version: 0.2.0
+Summary: Modular foundation for the Shadow-Xai AI assistant
+Author: Shadow-Xai contributors
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+
 # Shadow-Xai
 
 **Shadow-Xai** adalah fondasi chatbot AI open source modular untuk percakapan, memory, tools, knowledge retrieval, dan agent orchestration yang aman.
