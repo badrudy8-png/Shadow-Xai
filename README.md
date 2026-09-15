@@ -2,22 +2,18 @@
 
 **Shadow-Xai** adalah fondasi chatbot AI open source yang dirancang untuk percakapan alami, penalaran, adaptasi konteks, penggunaan alat, bantuan pemrograman, analisis informasi, dan perilaku agen yang dapat dikendalikan.
 
-> **Status:** tahap fondasi awal. Implementasi model, provider, memori, dan alat eksternal belum diaktifkan secara default.
-
-## Tujuan
-
-Proyek ini bertujuan menyediakan struktur yang jelas untuk membangun asisten AI yang modular, dapat diuji, aman, dan mudah dikembangkan. Kemampuan seperti belajar mandiri, penggunaan alat, dan tindakan agen harus selalu dilengkapi batasan keamanan, audit, dan persetujuan yang sesuai.
+> **Status:** tahap fondasi aktif. Engine lokal sudah dapat dijalankan tanpa API key; adapter model eksternal dan alat agen masih menjadi pekerjaan lanjutan.
 
 ## Yang sudah tersedia
 
-- Struktur paket Python minimal.
-- Antarmuka `ChatEngine` yang dapat dikembangkan untuk provider model.
-- CLI lokal untuk memeriksa instalasi dan menjalankan respons placeholder.
-- Konfigurasi proyek melalui `pyproject.toml`.
-- Pengujian dasar dengan `pytest`.
-- Dokumentasi arsitektur dan panduan kontribusi.
+- Engine percakapan lokal yang dapat dijalankan langsung.
+- Riwayat percakapan in-memory.
+- Mode CLI satu pesan dan mode interaktif.
+- Perintah `/help`, `/clear`, dan `/exit`.
+- Antarmuka provider yang siap dikembangkan.
+- Pengujian otomatis dan dokumentasi arsitektur.
 
-## Instalasi untuk pengembangan
+## Instalasi
 
 Gunakan Python 3.10 atau yang lebih baru.
 
@@ -30,17 +26,33 @@ python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
 ```
 
-## Penggunaan saat ini
+## Menjalankan engine
 
-CLI berikut memverifikasi bahwa fondasi proyek terpasang:
+Kirim satu pesan:
 
 ```bash
-shadow-xai --help
-shadow-xai --version
 shadow-xai chat "Halo, Shadow-Xai"
 ```
 
-Pada tahap ini, perintah `chat` mengembalikan respons placeholder. Integrasi model nyata akan ditambahkan melalui adapter provider, bukan dengan menaruh API key di source code.
+Atau jalankan mode interaktif:
+
+```bash
+shadow-xai chat
+```
+
+Contoh sesi:
+
+```text
+Shadow-Xai interactive mode. Ketik /help untuk bantuan.
+Anda> Halo
+Shadow-Xai> Shadow-Xai masih dalam tahap fondasi. Pesan diterima: Halo
+Anda> /clear
+Riwayat percakapan dihapus.
+Anda> /exit
+Sampai jumpa.
+```
+
+Engine saat ini bersifat lokal dan deterministik. Tidak ada data yang dikirim ke layanan eksternal dan tidak ada API key yang diperlukan. Respons placeholder akan diganti adapter model nyata pada tahap berikutnya.
 
 ## Struktur proyek
 
@@ -63,7 +75,7 @@ Pada tahap ini, perintah `chat` mengembalikan respons placeholder. Integrasi mod
 
 1. Menambahkan adapter provider LLM dengan antarmuka yang konsisten.
 2. Menambahkan konfigurasi environment yang tervalidasi.
-3. Menambahkan memori percakapan dengan kontrol privasi dan penghapusan data.
+3. Menambahkan memori persisten dengan kontrol privasi dan penghapusan data.
 4. Menambahkan registry alat dengan allowlist, timeout, dan audit log.
 5. Menambahkan evaluasi kualitas, keamanan, prompt injection, dan penggunaan alat.
 6. Menambahkan antarmuka web atau API setelah kontrak inti stabil.
