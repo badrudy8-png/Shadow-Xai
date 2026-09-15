@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Shadow-Xai, AI assistant interface.">
+  <title>Shadow-Xai</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">S</span><div><strong>Shadow-Xai</strong><small>AI Assistant</small></div></div>
+      <button id="newChat" class="new-chat">+ Percakapan baru</button>
+      <div class="side-section"><span>STATUS</span><div class="status"><i></i><span id="statusText">Local UI ready</span></div></div>
+      <div class="side-section"><span>MODE</span><select id="mode"><option value="balanced">Balanced</option><option value="fast">Fast</option><option value="quality">Quality</option><option value="reasoning">Reasoning</option></select></div>
+      <div class="side-bottom"><label>API endpoint<input id="apiUrl" value="/api/chat" aria-label="API endpoint"></label><button id="saveApi" class="ghost">Simpan endpoint</button></div>
+    </aside>
+
+    <main class="chat-area">
+      <header class="topbar"><div><span class="eyebrow">SHADOW-XAI</span><h1>Workspace</h1></div><button id="clear" class="icon-btn" title="Hapus percakapan">Clear</button></header>
+      <section id="messages" class="messages" aria-live="polite">
+        <div class="welcome"><div class="orb">✦</div><h2>Halo. Gue Shadow-Xai.</h2><p>Masukkan pertanyaan, ide, atau tugas. UI ini siap terhubung ke backend API Shadow-Xai.</p><div class="suggestions"><button data-prompt="Jelaskan arsitektur Shadow-Xai saat ini.">Arsitektur</button><button data-prompt="Bantu gue membuat rencana pengembangan AI assistant.">Rencana pengembangan</button><button data-prompt="Hitung 128 * 37 dan jelaskan hasilnya.">Kalkulasi</button></div></div>
+      </section>
+      <form id="composer" class="composer"><textarea id="input" rows="1" placeholder="Tulis pesan..." autocomplete="off"></textarea><button id="send" type="submit">Kirim ↗</button></form>
+      <footer>Shadow-Xai · Frontend static · Jangan taruh API key di browser.</footer>
+    </main>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
