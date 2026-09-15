@@ -38,3 +38,6 @@ outputs/
 
 # Local/private data
 data/private/
+
+src/*egg-info/
+.pytest_cache/
