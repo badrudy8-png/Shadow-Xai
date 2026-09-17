@@ -3,27 +3,67 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Shadow-Xai, AI assistant interface.">
-  <title>Shadow-Xai</title>
+  <meta name="theme-color" content="#080a10">
+  <meta name="description" content="Shadow-Xai, modular AI assistant workspace.">
+  <title>Shadow-Xai · Workspace</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
   <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand"><span class="brand-mark">S</span><div><strong>Shadow-Xai</strong><small>AI Assistant</small></div></div>
-      <button id="newChat" class="new-chat">+ Percakapan baru</button>
-      <div class="side-section"><span>STATUS</span><div class="status"><i></i><span id="statusText">Local UI ready</span></div></div>
-      <div class="side-section"><span>MODE</span><select id="mode"><option value="balanced">Balanced</option><option value="fast">Fast</option><option value="quality">Quality</option><option value="reasoning">Reasoning</option></select></div>
-      <div class="side-bottom"><label>API endpoint<input id="apiUrl" value="/api/chat" aria-label="API endpoint"></label><button id="saveApi" class="ghost">Simpan endpoint</button></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">S</div>
+        <div><strong>Shadow-Xai</strong><span>AI Workspace</span></div>
+      </div>
+      <button id="newChat" class="new-chat"><span>＋</span> Percakapan baru</button>
+      <div class="side-block">
+        <div class="section-label">SYSTEM</div>
+        <div class="status"><i></i><div><strong id="statusText">Checking backend</strong><span id="statusMeta">Local workspace</span></div></div>
+      </div>
+      <div class="side-block">
+        <div class="section-label">MODEL PROFILE</div>
+        <select id="mode" aria-label="Model profile">
+          <option value="balanced">Balanced</option><option value="fast">Fast</option><option value="quality">Quality</option><option value="reasoning">Reasoning</option>
+        </select>
+      </div>
+      <div class="side-block history-block">
+        <div class="section-label">RECENT</div>
+        <div id="historyList" class="history-list"><div class="history-empty">Belum ada percakapan.</div></div>
+      </div>
+      <div class="side-bottom">
+        <label class="endpoint-label">API endpoint<input id="apiUrl" value="/api/chat" aria-label="API endpoint"></label>
+        <button id="saveApi" class="ghost">Simpan endpoint</button>
+      </div>
     </aside>
 
     <main class="chat-area">
-      <header class="topbar"><div><span class="eyebrow">SHADOW-XAI</span><h1>Workspace</h1></div><button id="clear" class="icon-btn" title="Hapus percakapan">Clear</button></header>
+      <header class="topbar">
+        <div class="top-title"><button id="menu" class="menu-btn" aria-label="Buka menu">☰</button><div><span class="eyebrow">SHADOW-XAI</span><h1>Workspace</h1></div></div>
+        <div class="top-actions"><span id="modelPill" class="model-pill">LOCAL</span><button id="clear" class="icon-btn" title="Hapus percakapan">Bersihkan</button></div>
+      </header>
+
       <section id="messages" class="messages" aria-live="polite">
-        <div class="welcome"><div class="orb">✦</div><h2>Halo. Gue Shadow-Xai.</h2><p>Masukkan pertanyaan, ide, atau tugas. UI ini siap terhubung ke backend API Shadow-Xai.</p><div class="suggestions"><button data-prompt="Jelaskan arsitektur Shadow-Xai saat ini.">Arsitektur</button><button data-prompt="Bantu gue membuat rencana pengembangan AI assistant.">Rencana pengembangan</button><button data-prompt="Hitung 128 * 37 dan jelaskan hasilnya.">Kalkulasi</button></div></div>
+        <div class="welcome">
+          <div class="orb"><span>✦</span></div>
+          <span class="welcome-kicker">MODULAR AI ASSISTANT</span>
+          <h2>Bangun sesuatu yang berguna.</h2>
+          <p>Chat, reasoning, memory, knowledge retrieval, tools, dan agent orchestration dalam satu workspace.</p>
+          <div class="suggestions">
+            <button data-prompt="Jelaskan arsitektur Shadow-Xai saat ini."><b>⌘</b> Arsitektur</button>
+            <button data-prompt="Bantu gue membuat rencana pengembangan AI assistant."><b>↗</b> Rencana pengembangan</button>
+            <button data-prompt="Hitung 128 * 37 dan jelaskan hasilnya."><b>∑</b> Kalkulasi</button>
+          </div>
+        </div>
       </section>
-      <form id="composer" class="composer"><textarea id="input" rows="1" placeholder="Tulis pesan..." autocomplete="off"></textarea><button id="send" type="submit">Kirim ↗</button></form>
-      <footer>Shadow-Xai · Frontend static · Jangan taruh API key di browser.</footer>
+
+      <div class="composer-wrap">
+        <form id="composer" class="composer">
+          <div class="composer-main"><textarea id="input" rows="1" placeholder="Tulis pesan untuk Shadow-Xai..." autocomplete="off" aria-label="Pesan"></textarea></div>
+          <div class="composer-bottom"><span>Enter untuk kirim · Shift + Enter untuk baris baru</span><button id="send" type="submit" aria-label="Kirim pesan">Kirim <b>↗</b></button></div>
+        </form>
+      </div>
+      <footer>Shadow-Xai · Local-first interface · Jangan taruh API key di browser.</footer>
     </main>
   </div>
   <script src="./app.js"></script>
